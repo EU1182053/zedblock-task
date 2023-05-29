@@ -24,16 +24,11 @@ const Login = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(payload),
-            });
+            })
+            const data = await response.json();
+            navigate(`/taskscreen?userId=${data.user._id}`);
 
-            if (response.ok) {
-                // Successful login
-                console.log('Login successful');
-                navigate('/');
-            } else {
-                // Error handling for unsuccessful login
-                console.error('Login failed');
-            }
+            
         } catch (error) {
             console.error('An error occurred during login:', error);
         }
