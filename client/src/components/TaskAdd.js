@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const TaskAdd = () => {
@@ -43,26 +43,37 @@ const TaskAdd = () => {
 
 
     };
+
+
+    useEffect(() => {
+        if (userId === null) {
+            navigate('/login')
+        }
+
+
+    }, [userId])
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                placeholder="Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-            />
-            <textarea
-                type="text"
-                placeholder="Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-            />
-            <select value={state} onChange={(e) => setState(e.target.value)}>
-                <option value="active">Active</option>
-                <option value="completed">Completed</option>
-            </select>
-            <button type="submit">Add Task</button>
-        </form>
+        <>
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    placeholder="Title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                />
+                <textarea
+                    type="text"
+                    placeholder="Description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                />
+                <select value={state} onChange={(e) => setState(e.target.value)}>
+                    <option value="active">Active</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <button type="submit">Add Task</button>
+            </form>
+        </>
     )
 }
 
