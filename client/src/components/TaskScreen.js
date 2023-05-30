@@ -15,6 +15,7 @@ const TaskScreen = () => {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
 
+    const [filter, setFilter] = useState('all');
     useEffect(() => {
         const fetchTasks = async () => {
             const userId = localStorage.getItem('userId');
@@ -24,6 +25,8 @@ const TaskScreen = () => {
                 console.log(response.data)
                 setTotalPages(response.data.totalPages)
                 setTasks(response.data.tasks);
+
+                applyFilter(filter, response.data.tasks);
             } catch (error) {
                 console.error('Failed to fetch tasks:', error);
             }
@@ -32,6 +35,23 @@ const TaskScreen = () => {
         fetchTasks();
     }, [userId, page]);
 
+    const applyFilter = (filterValue, tasks) => {
+        let filteredTasks = [];
+        if (filterValue === 'all') {
+            filteredTasks = tasks;
+        } else if (filterValue === 'active') {
+            filteredTasks = tasks.filter(task => task.state === 'active');
+        } else if (filterValue === 'completed') {
+            filteredTasks = tasks.filter(task => task.state === 'completed');
+        }
+        setTasks(filteredTasks);
+    };
+
+    const handleFilterChange = e => {
+        const filterValue = e.target.value;
+        setFilter(filterValue);
+        applyFilter(filterValue, tasks);
+    };
     const handlePreviousPage = () => {
         setPage((prevPage) => Math.max(prevPage - 1, 1));
     };
@@ -74,6 +94,12 @@ const TaskScreen = () => {
     return (
         <div>
             <Navbar />
+            <label htmlFor="filter">Filter:</label>
+            <select id="filter" value={filter} onChange={handleFilterChange}>
+                <option value="all">All</option>
+                <option value="active">Active</option>
+                <option value="completed">Completed</option>
+            </select>
             <h3>Tasks:</h3>
             <input
                 type="text"

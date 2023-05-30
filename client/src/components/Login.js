@@ -6,6 +6,7 @@ const Login = () => {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('')
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -26,6 +27,8 @@ const Login = () => {
                 body: JSON.stringify(payload),
             })
             const data = await response.json();
+            console.log(data)
+            setError(data.error)
             // Store the user ID in the local storage
             localStorage.setItem('userId', data.user._id);
             navigate(`/taskscreen?userId=${data.user._id}`);
@@ -54,6 +57,7 @@ const Login = () => {
                 />
                 <button type="submit">Login</button>
             </form>
+            {error && <p className="error">{error}</p>}
             <p>
                 Don't have an account? <Link to="/signup">Sign up</Link>
             </p>
