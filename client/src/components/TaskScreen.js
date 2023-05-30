@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import TaskActionMenu from './TaskActionMenu';
 
 const TaskScreen = () => {
     const location = useLocation();
+    const navigate = useNavigate();
+
     const searchParams = new URLSearchParams(location.search);
     const userId = searchParams.get('userId');
     const [tasks, setTasks] = useState([]);
@@ -32,7 +35,20 @@ const TaskScreen = () => {
         task.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const handleTaskCompletionToggle = async (taskId) => {
+      
+            
+    };
 
+    const handleBulkRemoveCompleted = () => {
+        // Logic to remove completed tasks
+        // This function will be called when the "Remove Completed Tasks" button is clicked
+      };
+
+      
+    const handleTaskTitleClick = (taskId) => {
+        navigate(`/task/details?taskId=${taskId}`);
+    };
     return (
         <div>
             <h3>Tasks:</h3>
@@ -42,21 +58,27 @@ const TaskScreen = () => {
                 value={searchTerm}
                 onChange={handleSearch}
             />
-            <ul>
+            <div className="task-tiles">
                 {filteredTasks.length > 0 ? (
                     filteredTasks.map((task) => (
-                        <li key={task._id}>
+                        <div key={task._id} className="task-tile" onClick={() => handleTaskTitleClick(task._id)}>
                             <h4>{task.title}</h4>
-                            <p>{task.description}</p>
-                            <p>{task.completed ? 'Completed' : 'Active'}</p>
-                        </li>
+                            <input
+                                type="checkbox"
+                                checked={task.state === 'completed'}
+                                onChange={() => handleTaskCompletionToggle(task._id)}
+                            />
+                        </div>
                     ))
                 ) : (
                     <p>No tasks found.</p>
                 )}
-            </ul>
+            </div>
+            <TaskActionMenu onBulkRemoveCompleted={handleBulkRemoveCompleted} />
         </div>
     );
 };
 
 export default TaskScreen;
+
+
