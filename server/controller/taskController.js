@@ -7,10 +7,10 @@ exports.createTask = async (req, res) => {
     try {
         const todo = new Task({
             title,
-            description,
+            description, 
             state,
             user: userId,
-        });
+        });   
         await todo.save();
         res.json(todo);
     } catch (error) {
@@ -53,7 +53,6 @@ exports.updateTaskState = async (req, res) => {
         await task.save();
 
 
-        console.log('Task state updated successfully');
         res.json(task)
     } catch (error) {
         console.error('Failed to update task state:', error);
@@ -78,7 +77,7 @@ exports.deleteTask = async (req, res) => {
 
 exports.getAllTasksByUserId = async (req, res) => {
     try {
-        var userId = new ObjectId(req.params.userId)
+        var userId = req.params.userId
 
 
         // Find tasks by user ID
@@ -112,7 +111,6 @@ exports.updateTaskById = async(req, res) => {
     try {
         var taskId = req.params.taskId;
         var updatedData = req.body;
-        console.log(taskId, updatedData)
         const updatedTask = await Task.findOneAndUpdate(
           { _id: taskId },
           updatedData,

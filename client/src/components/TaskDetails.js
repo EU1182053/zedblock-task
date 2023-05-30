@@ -15,7 +15,6 @@ const TaskDetails = () => {
         const fetchTasks = async () => {
             try {
                 const response = await axios.get(`http://localhost:8000/api/v1/task/getById/${taskId}`);
-                console.log(response.data.task);
                 setTasks(response.data.task);
             } catch (error) {
                 console.error('Failed to fetch tasks:', error);
@@ -42,7 +41,6 @@ const TaskDetails = () => {
 
             if (response.status === 200) {
                 // Show a success message to the user
-                console.log('Task deleted successfully');
                 
                 // Optionally, you can update the task list state or fetch updated task list
                 // after successful deletion

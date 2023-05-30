@@ -5,7 +5,8 @@ import Login from './components/Login'
 import Signup from './components/Signup'
 import TaskScreen from './components/TaskScreen'
 import TaskDetails from './components/TaskDetails'
-import EditTask from './components/EditTask'
+import EditTask from './components/TaskEdit'
+import TaskAdd from './components/TaskAdd'
 
 
 const RouterList = () => {
@@ -19,6 +20,7 @@ const RouterList = () => {
                 <Route path="/taskscreen" element={<TaskScreen/>} />
                 <Route path="/task/details" element={<TaskDetails/>} />
                 <Route path="/edit-task" element={<EditTask/>} />
+                <Route path="/add-task" element={<TaskAdd/>} />
                 
             </Routes>
         </BrowserRouter>

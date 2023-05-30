@@ -16,7 +16,6 @@ const TaskScreen = () => {
         const fetchTasks = async () => {
             try {
                 const response = await axios.get(`http://localhost:8000/api/v1/task/getAll/${userId}`);
-                console.log(response.data.tasks);
                 setTasks(response.data.tasks);
             } catch (error) {
                 console.error('Failed to fetch tasks:', error);
@@ -45,6 +44,9 @@ const TaskScreen = () => {
         // This function will be called when the "Remove Completed Tasks" button is clicked
       };
 
+      const handleTaskCreate = (userId) => {
+        navigate(`/add-task?userId=${userId}`)
+      }
       
     const handleTaskTitleClick = (taskId) => {
         navigate(`/task/details?taskId=${taskId}`);
@@ -75,6 +77,9 @@ const TaskScreen = () => {
                 )}
             </div>
             <TaskActionMenu onBulkRemoveCompleted={handleBulkRemoveCompleted} />
+            <button onClick={() => {
+                handleTaskCreate(userId)
+            }}>Add Task</button>
         </div>
     );
 };

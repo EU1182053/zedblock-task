@@ -6,7 +6,7 @@ const { createTask, updateTask, deleteTask, getAllTasksByUserId,searchTasks, get
 var router = express.Router();
 
 
-router.post("/task/:userId/create", createTask);
+router.post("/task/create/:userId", createTask);
 
 router.get("/task/search", searchTasks)
 

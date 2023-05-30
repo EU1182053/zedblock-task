@@ -45,7 +45,6 @@ const Signup = () => {
 
             if (response.ok) {
                 // Successful login
-                console.log('Signup successful');
                 navigate('/');
             } else {
                 // Error handling for unsuccessful login
