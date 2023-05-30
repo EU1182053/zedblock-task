@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const Navbar = ({ filterTasks }) => {
+const Navbar = () => {
   return (
     <nav>
       <ul>
+      <li>
+          <Link to="/">Home</Link>
+        </li>
         <li>
           <Link to="/add-task">Add Task</Link>
         </li>
@@ -17,9 +20,8 @@ const Navbar = ({ filterTasks }) => {
         <li>
           <Link to="/completed">Completed</Link>
         </li> */}
-
       </ul>
-      
+
     </nav>
   );
 };

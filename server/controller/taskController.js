@@ -7,10 +7,10 @@ exports.createTask = async (req, res) => {
     try {
         const todo = new Task({
             title,
-            description, 
+            description,
             state,
             user: userId,
-        });   
+        });
         await todo.save();
         res.json(todo);
     } catch (error) {
@@ -72,31 +72,42 @@ exports.deleteTask = async (req, res) => {
     } catch (error) {
         console.error('Failed to delete task:', error);
         res.status(500).json({ message: 'Failed to delete task' });
-    } 
+    }
 }
 
 exports.getAllTasksByUserId = async (req, res) => {
     try {
-        var userId = req.params.userId
+        const userId = req.params.userId;
+        const { page = 1, limit = 5, sortBy = 'createdAt', sortOrder = 'desc' } = req.query;
 
+        const skipCount = (page - 1) * limit;
 
-        // Find tasks by user ID
-        const tasks = await Task.find({ user: userId });
+        const sortOptions = {
+            [sortBy]: sortOrder === 'asc' ? 1 : -1,
+        };
 
-        res.json({ tasks, "Success": true });
+        const totalTasksCount = await Task.countDocuments({ user: userId });
+
+        const totalPages = Math.ceil(totalTasksCount / limit);
+        const tasks = await Task.find({ user: userId })
+            .sort(sortOptions)
+            .skip(skipCount)
+            .limit(limit);
+
+        res.json({ tasks, totalPages });
     } catch (error) {
         console.error('Failed to fetch tasks:', error);
         res.status(500).json({ error: 'Failed to fetch tasks' });
     }
 
-} 
+}
 
 exports.getTaskById = async (req, res) => {
 
     try {
         var taskId = req.params.taskId
 
- 
+
         // Find tasks by user ID
         const task = await Task.findById(taskId);
 
@@ -105,26 +116,26 @@ exports.getTaskById = async (req, res) => {
         console.error('Failed to fetch tasks:', error);
         res.status(500).json({ error: 'Failed to fetch tasks' });
     }
-} 
+}
 
-exports.updateTaskById = async(req, res) => {
+exports.updateTaskById = async (req, res) => {
     try {
         var taskId = req.params.taskId;
         var updatedData = req.body;
         const updatedTask = await Task.findOneAndUpdate(
-          { _id: taskId },
-          updatedData,
-          { new: true }
+            { _id: taskId },
+            updatedData,
+            { new: true }
         );
-    
+
         if (!updatedTask) {
-          // Task not found
-          return null;
+            // Task not found
+            return null;
         }
-    
+
         return res.json(updatedTask);
-      } catch (error) {
+    } catch (error) {
         // Handle error
-        throw error;  
-      }
+        throw error;
+    }
 }

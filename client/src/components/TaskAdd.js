@@ -18,8 +18,10 @@ const TaskAdd = () => {
         const newTask = {
             title,
             description,
-            state
+            state,
+            
         };
+        const userId = localStorage.getItem('userId');
         // Pass the new task to the parent component
         fetch(`http://localhost:8000/api/v1/task/create/${userId}`, {
             method: 'POST',
@@ -33,9 +35,9 @@ const TaskAdd = () => {
                 console.log('Response from server:', data);
 
                 // Reset form fields
-                setTitle('');
-                setDescription('');
-                setState('active')
+                // setTitle('');
+                // setDescription('');
+                // setState('active')
                 navigate(`/taskscreen?userId=${userId}`);
 
             })
@@ -45,13 +47,6 @@ const TaskAdd = () => {
     };
 
 
-    useEffect(() => {
-        if (userId === null) {
-            navigate('/login')
-        }
-
-
-    }, [userId])
     return (
         <>
             <form onSubmit={handleSubmit}>

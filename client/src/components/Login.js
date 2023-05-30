@@ -18,17 +18,19 @@ const Login = () => {
         try {
             const response = await fetch('http://localhost:8000/api/v1/user/login', {
                 method: 'POST',
-                
+
                 headers: {
-                    'Access-Control-Allow-Origin':"*",
+                    'Access-Control-Allow-Origin': "*",
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(payload),
             })
             const data = await response.json();
+            // Store the user ID in the local storage
+            localStorage.setItem('userId', data.user._id);
             navigate(`/taskscreen?userId=${data.user._id}`);
 
-            
+
         } catch (error) {
             console.error('An error occurred during login:', error);
         }

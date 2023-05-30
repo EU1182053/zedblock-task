@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import TaskActionMenu from './TaskActionMenu';
+import Navbar from './Navbar';
 
 const TaskScreen = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
     const searchParams = new URLSearchParams(location.search);
-    const userId = searchParams.get('userId');
+    const userId = searchParams.get('userId') || localStorage.getItem('userId');
     const [tasks, setTasks] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
 
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+
     useEffect(() => {
         const fetchTasks = async () => {
+            const userId = localStorage.getItem('userId');
+
             try {
-                const response = await axios.get(`http://localhost:8000/api/v1/task/getAll/${userId}`);
+                const response = await axios.get(`http://localhost:8000/api/v1/task/getAll/${userId}?page=${page}`);
+                console.log(response.data)
+                setTotalPages(response.data.totalPages)
                 setTasks(response.data.tasks);
             } catch (error) {
                 console.error('Failed to fetch tasks:', error);
@@ -23,36 +30,50 @@ const TaskScreen = () => {
         };
 
         fetchTasks();
-    }, [userId]);
+    }, [userId, page]);
 
-    const handleSearch = (e) => {
-        setSearchTerm(e.target.value);
+    const handlePreviousPage = () => {
+        setPage((prevPage) => Math.max(prevPage - 1, 1));
     };
 
-    const filteredTasks = tasks.filter((task) =>
-        task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        task.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const handleNextPage = () => {
+        setPage((prevPage) => Math.min(prevPage + 1, totalPages));
+    };
+    const handleSearch = (e) => {
+        setSearchTerm(e.target.value);
+
+        const filteredTasks = tasks.filter((task) => {
+            return (task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                task.description.toLowerCase().includes(searchTerm.toLowerCase()))
+
+        }
+        )
+
+        setTasks(filteredTasks)
+    };
+
+
 
     const handleTaskCompletionToggle = async (taskId) => {
-      
-            
+
+
     };
 
     const handleBulkRemoveCompleted = () => {
-        // Logic to remove completed tasks
-        // This function will be called when the "Remove Completed Tasks" button is clicked
-      };
+        const updatedTasks = tasks.filter(task => task.state != 'completed');
+        setTasks(updatedTasks);
+    };
 
-      const handleTaskCreate = (userId) => {
+    const handleTaskCreate = (userId) => {
         navigate(`/add-task?userId=${userId}`)
-      }
-      
+    }
+
     const handleTaskTitleClick = (taskId) => {
         navigate(`/task/details?taskId=${taskId}`);
     };
     return (
         <div>
+            <Navbar />
             <h3>Tasks:</h3>
             <input
                 type="text"
@@ -61,8 +82,8 @@ const TaskScreen = () => {
                 onChange={handleSearch}
             />
             <div className="task-tiles">
-                {filteredTasks.length > 0 ? (
-                    filteredTasks.map((task) => (
+                {tasks.length > 0 ? (
+                    tasks.map((task) => (
                         <div key={task._id} className="task-tile" onClick={() => handleTaskTitleClick(task._id)}>
                             <h4>{task.title}</h4>
                             <input
@@ -70,16 +91,35 @@ const TaskScreen = () => {
                                 checked={task.state === 'completed'}
                                 onChange={() => handleTaskCompletionToggle(task._id)}
                             />
+
                         </div>
                     ))
                 ) : (
                     <p>No tasks found.</p>
                 )}
             </div>
-            <TaskActionMenu onBulkRemoveCompleted={handleBulkRemoveCompleted} />
-            <button onClick={() => {
-                handleTaskCreate(userId)
-            }}>Add Task</button>
+            <div className="pagination">
+                <button
+                    className="pagination-button"
+                    onClick={handlePreviousPage}
+                    disabled={page === 1}
+                >
+                    Previous
+                </button>
+                <span className="page-info">
+                    Page {page} of {totalPages}
+                </span>
+                <button
+                    className="pagination-button"
+                    onClick={handleNextPage}
+                    disabled={page === totalPages}
+                >
+                    Next
+                </button>
+            </div>
+            <button onClick={handleBulkRemoveCompleted}>Remove Completed</button>
+
+
         </div>
     );
 };

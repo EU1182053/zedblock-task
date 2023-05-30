@@ -45,7 +45,7 @@ const Signup = () => {
 
             if (response.ok) {
                 // Successful login
-                navigate('/');
+                navigate('/login');
             } else {
                 // Error handling for unsuccessful login
                 console.error('Login failed');

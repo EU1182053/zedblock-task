@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
+import Navbar from './Navbar';
 
 const TaskDetails = () => {
     const location = useLocation();
@@ -57,6 +58,7 @@ const TaskDetails = () => {
     };
     return (
         <div> 
+            <Navbar/>
             <h3>Tasks:</h3>
 
             <div className="task-tiles">
@@ -67,7 +69,7 @@ const TaskDetails = () => {
                     <h4>{tasks.description}</h4>
                     <input
                         type="checkbox"
-                        checked={tasks.completed}
+                        checked={tasks.state === 'completed'}
                         onChange={() => handleTaskCompletionToggle(tasks._id)}
                     />
                     <button onClick={handleDeleteTask}>Delete Task</button>
